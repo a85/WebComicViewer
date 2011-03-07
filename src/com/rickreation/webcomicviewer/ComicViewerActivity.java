@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.rickreation.webcomicviewer.ui.ZoomableImageView;
+import com.rickreation.ui.ZoomableImageView;
 
 public class ComicViewerActivity extends Activity {
 	public static final String TAG = "ComicViewerActivity";
@@ -24,19 +24,12 @@ public class ComicViewerActivity extends Activity {
     	Intent i = getIntent();
     	comic = i.getStringExtra("comic");
     	mDbHelper = new ComicDbAdapter(this);
-        mDbHelper.open();
-        
-        Cursor item = mDbHelper.fetchStrip(1);       
-        String img = item.getString(item.getColumnIndexOrThrow(ComicDbAdapter.KEY_IMG));
-        Log.d(TAG, comic);
-        Log.d(TAG, img);
+        mDbHelper.open();        
     }
     
     @Override
     public void onStop() {
     	super.onStop();
     	mDbHelper.close();
-    }
-    
-    
+    }    
 }

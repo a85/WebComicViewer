@@ -1,14 +1,11 @@
 package com.rickreation.ui;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.FloatMath;
@@ -19,7 +16,7 @@ import android.view.View;
 import android.view.GestureDetector.SimpleOnGestureListener;
 
 public class ZoomableImageView extends View {
-	private static final String TAG = "EnvironmentView";		
+	private static final String TAG = "ZoomableImageView";		
 	
 	private Bitmap imgBitmap = null;
 	
@@ -28,8 +25,6 @@ public class ZoomableImageView extends View {
 		
 	Paint background;	
 	
-	ArrayList<RectF> wpBounds;
-
 	//Matrices will be used to move and zoom image
 	Matrix matrix = new Matrix();
 	Matrix savedMatrix = new Matrix();
@@ -81,7 +76,6 @@ public class ZoomableImageView extends View {
 		super(context);		
 		setFocusable(true);
 		setFocusableInTouchMode(true);
-		wpBounds = new ArrayList<RectF>();
 		
 		screenDensity = context.getResources().getDisplayMetrics().density;
 						
@@ -90,9 +84,7 @@ public class ZoomableImageView extends View {
 	}
 	
 	public ZoomableImageView(Context context, AttributeSet attrs) {
-		super(context, attrs);	
-		wpBounds = new ArrayList<RectF>();
-		Log.d(TAG, "EnvironmentView initialized.");
+		super(context, attrs);
 		
 		screenDensity = context.getResources().getDisplayMetrics().density;
 		
@@ -101,7 +93,6 @@ public class ZoomableImageView extends View {
 	}
 	
 	private void initPaints() {
-		Log.d(TAG, "Paints initiailzed.");
 		background = new Paint();
 	}
 	
@@ -140,10 +131,7 @@ public class ZoomableImageView extends View {
 			curX = initX;
 			curY = initY;
 			currentScale = scale;
-			minScale = currentScale;
-			
-			Log.d(TAG, "Minimum scale is " + minScale);
-			
+			minScale = currentScale;						
 			invalidate();			
 		}
 	}
@@ -166,16 +154,11 @@ public class ZoomableImageView extends View {
 		matrix.getValues(mvals);
 		
 		currentScale = mvals[0];
-		
-		boolean toScale = false;		
-		if(currentScale < minScale) {
-			toScale = true;			
-			
+				
+		if(currentScale < minScale) {								
 			float deltaScale = minScale / currentScale;					
 			float px = containerWidth/2;
-			float py = containerHeight/2;
-			
-			Log.d(TAG, "Scaling about " + px + " " + py);
+			float py = containerHeight/2;			
 			matrix.postScale(deltaScale, deltaScale, px, py);
 			invalidate();
 		}		
@@ -346,11 +329,7 @@ public class ZoomableImageView extends View {
 			
 			containerWidth = getWidth();
 			containerHeight = getHeight();
-			
-			Log.d(TAG, containerWidth + "");
-			Log.d(TAG, containerHeight + "");
 						
-			
 			int imgHeight = imgBitmap.getHeight();
 			int imgWidth = imgBitmap.getWidth();
 			
@@ -434,10 +413,7 @@ public class ZoomableImageView extends View {
 	};
 	
 	private Runnable mUpdateImageScale = new Runnable() {
-		public void run() {
-			Log.d(TAG, "Target scale is " + targetScale);
-			Log.d(TAG, "Current scale is " + currentScale);
-			
+		public void run() {			
 			float transitionalRatio = targetScale / currentScale;			
 			float dx;
 			if(Math.abs(transitionalRatio - 1) > 0.05) {
@@ -446,7 +422,6 @@ public class ZoomableImageView extends View {
 					dx = transitionalRatio - 1;
 					scaleChange = 1 + dx * 0.2f;
 					
-					Log.d(TAG, "Attempted scale change is " + scaleChange);
 					currentScale *= scaleChange;
 					
 					if(currentScale > targetScale) {
@@ -459,14 +434,12 @@ public class ZoomableImageView extends View {
 					scaleChange = 1 - dx * 0.5f;
 					currentScale *= scaleChange;
 					
-					Log.d(TAG, "Attempted scale change is " + scaleChange);
 					if(currentScale < targetScale) {
 						currentScale = currentScale / scaleChange;
 						scaleChange = 1;
 					}
 				}
-				
-				Log.d(TAG, "Change in scale = " + scaleChange);								
+												
 				
 				if(scaleChange != 1) {
 					matrix.postScale(scaleChange, scaleChange, targetScaleX, targetScaleY);				
@@ -497,8 +470,7 @@ public class ZoomableImageView extends View {
 	
    /** Show an event in the LogCat view, for debugging */
    private void dumpEvent(MotionEvent event) {
-      String names[] = { "DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE",
-            "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?" };
+      String names[] = { "DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE", "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?" };
       StringBuilder sb = new StringBuilder();
       int action = event.getAction();
       int actionCode = action & MotionEvent.ACTION_MASK;
@@ -518,15 +490,12 @@ public class ZoomableImageView extends View {
             sb.append(";");
       }
       sb.append("]");
-      Log.d(TAG, sb.toString());
    }
 
    class MyGestureDetector extends SimpleOnGestureListener {
 		@Override
-		public boolean onDoubleTap(MotionEvent event) {
-			Log.d(TAG, "Just double tapped");
+		public boolean onDoubleTap(MotionEvent event) {			
 			if(isAnimating == true) {
-				Log.d(TAG, "isAnimating is true");
 				return true;
 			}
 			
