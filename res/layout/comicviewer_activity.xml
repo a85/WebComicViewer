@@ -7,7 +7,7 @@
 	<FrameLayout android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:layout_weight="1">
-		<com.rickreation.ui.ZoomableImageViewer android:id="@+id/comic_viewer"
+		<com.rickreation.ui.ZoomableImageView android:id="@+id/comic_viewer"
 				android:layout_width="fill_parent" android:layout_height="fill_parent"/>
 	</FrameLayout>
 </LinearLayout>

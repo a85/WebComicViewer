@@ -237,7 +237,9 @@ public class ZoomableImageView extends View {
 		switch(event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
 			if(isAnimating == false) {
-								
+				savedMatrix.set(matrix);
+				start.set(event.getX(), event.getY());			
+				mode = DRAG;				
 			}
 		break;
 		
