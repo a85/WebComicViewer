@@ -35,8 +35,8 @@ public class ComicListActivity extends ListActivity {
     
 	ListView comicList;
 	
-	String[] from = new String[]{ "comic_name", "comic_unread" };
-	int[] to = new int[] { R.id.item_comic_name, R.id.item_comic_unread };
+	String[] from = new String[]{ "comic_name", "comic_num_items" };
+	int[] to = new int[] { R.id.item_comic_name, R.id.item_comic_num_items };
 	
 	List<HashMap<String, String>> comics;
 	
@@ -57,8 +57,9 @@ public class ComicListActivity extends ListActivity {
                 
         comicList = getListView();
         
-        comics = new ArrayList<HashMap<String, String>>();        
-        fillComicList();
+        
+        //This needs to be filled for the list to show up
+        comics = new ArrayList<HashMap<String, String>>();                
         
         SimpleAdapter adapter = new SimpleAdapter(this, comics, R.layout.item_comic, from, to);
         comicList.setAdapter(adapter);
@@ -67,16 +68,17 @@ public class ComicListActivity extends ListActivity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {				
 		    	HashMap<String, String> item = comics.get(position);
 		    	String comicName = (String)item.get("comic_name");		    	
-		    	Toast.makeText(getBaseContext(), comicName, Toast.LENGTH_LONG).show();
 		    	
 		    	startComicViewer(comicName);
 			}
 		});
         
         mDbHelper = new ComicDbAdapter(this);
-        mDbHelper.open();
+        mDbHelper.open();        
         
-        new WriteFilesTask().execute((String)null);        
+        //Start AsyncTask to fetch stuff from wc.rickreation.com/get.php
+        //Fill comics array
+        //Display list
     }
     
     @Override
@@ -86,15 +88,19 @@ public class ComicListActivity extends ListActivity {
     }
     
     private void fillComicList() {
+    	HashMap<String, String> item2 = new HashMap<String, String>();
+    	item2.put("comic_id", "1");
+    	item2.put("comic_name", "xkcd");
+    	item2.put("comic_num_items", "0");
+    	comics.add(item2);
+    	
     	HashMap<String, String> item1 = new HashMap<String, String>();
-    	item1.put("comic_name", "Dilbert");
-    	item1.put("comic_unread", "0");
+    	item1.put("comic_id", "2");
+    	item1.put("comic_name", "Dilbert");    	
+    	item1.put("comic_num_items", "0");
     	comics.add(item1);
     	
-    	HashMap<String, String> item2 = new HashMap<String, String>();
-    	item2.put("comic_name", "xkcd");
-    	item2.put("comic_unread", "0");
-    	comics.add(item2);
+    	
     }
     
     private void startComicViewer(String comicName) {

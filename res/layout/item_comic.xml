@@ -12,7 +12,7 @@
 			android:textColor="#FFFFFF"
 			android:gravity="center_vertical"
 			android:paddingBottom="10dp"/>
-	<TextView android:id="@+id/item_comic_unread"
+	<TextView android:id="@+id/item_comic_num_items"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_alignParentRight="true"

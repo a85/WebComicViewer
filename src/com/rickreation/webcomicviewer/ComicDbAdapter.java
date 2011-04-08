@@ -1,4 +1,4 @@
-package com.rickreation.webcomicviewer;
+		package com.rickreation.webcomicviewer;
 
 import android.content.ContentValues;
 import android.content.Context;
