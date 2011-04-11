@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, ComicListActivity!</string>
     <string name="app_name">WebComicViewer</string>
+   	<string name="api_url">http://wc.rickreation.com/api.php</string>
 </resources>

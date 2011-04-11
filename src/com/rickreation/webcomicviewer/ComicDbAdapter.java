@@ -11,7 +11,7 @@ import android.util.Log;
 import com.rickreation.webcomicviewer.models.Strip;
 
 public class ComicDbAdapter {
-	public static final String KEY_COMIC = "comic";
+	public static final String KEY_COMIC = "title";
 	public static final String KEY_IMG = "img";
 	public static final String KEY_TITLE = "title";
 	public static final String KEY_ALT = "alt";
@@ -40,9 +40,8 @@ public class ComicDbAdapter {
 	 */
 	private static final String DATABASE_CREATE =
 		"create table comics (_id integer primary key autoincrement, "
-		+ "comic text not null, "
-		+ "img text not null, "
 		+ "title text not null, "
+		+ "img text not null, "
 		+ "alt text, "
 		+ "num integer, "
 		+ "date text, "

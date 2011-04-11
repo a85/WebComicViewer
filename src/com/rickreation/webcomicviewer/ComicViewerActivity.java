@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
-import com.rickreation.R;
 import com.rickreation.ui.ZoomableImageView;
 
 public class ComicViewerActivity extends Activity {
@@ -25,7 +24,7 @@ public class ComicViewerActivity extends Activity {
     	setContentView(R.layout.comicviewer_activity);
     	
     	Intent i = getIntent();
-    	comic = i.getStringExtra("comic");
+    	comic = i.getStringExtra("title");
     	mDbHelper = new ComicDbAdapter(this);
         mDbHelper.open();        
         

@@ -1,8 +1,6 @@
 package com.rickreation.webcomicviewer;
 
-
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -10,39 +8,43 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.client.HttpClient;
+
 import android.app.ListActivity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.rickreation.R;
+import com.rickreation.webcomicviewer.api.WebComicViewerApi;
+import com.rickreation.webcomicviewer.models.Comic;
 import com.rickreation.webcomicviewer.models.Strip;
+
 
 public class ComicListActivity extends ListActivity {
 	public static final String TAG = "ComicListActivity";    
     
 	ListView comicList;
 	
-	String[] from = new String[]{ "comic_name", "comic_num_items" };
-	int[] to = new int[] { R.id.item_comic_name, R.id.item_comic_num_items };
+	String[] from = new String[]{ "comic_title", "comic_num_strips" };
+	int[] to = new int[] { R.id.item_comic_name, R.id.item_comic_num_strips };
 	
 	List<HashMap<String, String>> comics;
 	
 	private File cacheDir;
 	
 	private ComicDbAdapter mDbHelper;
+	
+	SimpleAdapter adapter;
 		
     /** Called when the activity is first created. */
     @Override
@@ -61,51 +63,31 @@ public class ComicListActivity extends ListActivity {
         //This needs to be filled for the list to show up
         comics = new ArrayList<HashMap<String, String>>();                
         
-        SimpleAdapter adapter = new SimpleAdapter(this, comics, R.layout.item_comic, from, to);
+        adapter = new SimpleAdapter(this, comics, R.layout.item_comic, from, to);
         comicList.setAdapter(adapter);
         
         comicList.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {				
 		    	HashMap<String, String> item = comics.get(position);
-		    	String comicName = (String)item.get("comic_name");		    	
-		    	
-		    	startComicViewer(comicName);
+		    	String comic_title = (String)item.get("comic_title");
+		    	int comic_id = Integer.parseInt(item.get("mComicId"));		    	
+		    	startComicViewer(comic_id, comic_title);
 			}
 		});
-        
-        mDbHelper = new ComicDbAdapter(this);
-        mDbHelper.open();        
-        
-        //Start AsyncTask to fetch stuff from wc.rickreation.com/get.php
-        //Fill comics array
-        //Display list
+                
+        //Start AsyncTask to fetch stuff from wc.rickreation.com/api.php        
+        new FetchComicsTask().execute((String)null);
     }
     
     @Override
     public void onStop() {
-    	super.onStop();
-    	mDbHelper.close();    	
-    }
+    	super.onStop();    	    
+    }    
     
-    private void fillComicList() {
-    	HashMap<String, String> item2 = new HashMap<String, String>();
-    	item2.put("comic_id", "1");
-    	item2.put("comic_name", "xkcd");
-    	item2.put("comic_num_items", "0");
-    	comics.add(item2);
-    	
-    	HashMap<String, String> item1 = new HashMap<String, String>();
-    	item1.put("comic_id", "2");
-    	item1.put("comic_name", "Dilbert");    	
-    	item1.put("comic_num_items", "0");
-    	comics.add(item1);
-    	
-    	
-    }
-    
-    private void startComicViewer(String comicName) {
-    	Intent i = new Intent(this, ComicViewerActivity.class);
-    	i.putExtra("comic", comicName);
+    private void startComicViewer(int id, String title) {
+    	Intent i = new Intent(this, StripListActivity.class);
+    	i.putExtra("title", title);
+    	i.putExtra("id", id);
     	startActivity(i);    	
     }
     
@@ -151,7 +133,6 @@ public class ComicListActivity extends ListActivity {
         			s.setDate("");            	            	
         			
         			try {
-        				mDbHelper.addStrip(s);
         				Log.d(TAG, "Added " + s.getImg());
         				
         			}
@@ -181,5 +162,42 @@ public class ComicListActivity extends ListActivity {
 		protected void onPostExecute(Long result) {
 			setProgressBarIndeterminateVisibility(false);
 		}
-    };    
+    };   
+    
+    public class FetchComicsTask extends AsyncTask<String, Integer, Long> {
+    	@Override
+    	protected Long doInBackground(String... params) {
+    		//Need httpClient and apiUrl
+    		//Get data
+    		//Display data
+    		WebComicViewerApp app = (WebComicViewerApp) getApplication();
+    		HttpClient httpClient = app.getHttpClient();
+    		String apiUrl = getResources().getString(R.string.api_url);
+    		
+    		WebComicViewerApi api = new WebComicViewerApi(httpClient, apiUrl);
+    		List<Comic> comicsList = api.getComicList();
+    		
+    		comics.clear();
+    		
+    		for(int i = 0; i < comicsList.size(); i++) {
+				Comic comic = comicsList.get(i);
+			
+				HashMap<String, String> hmap = new HashMap<String, String>();
+				hmap.put("mComicId", Integer.toString(comic.getId()));
+				hmap.put("comic_title", comic.getTitle());
+				hmap.put("comic_num_strips", Integer.toString(comic.getNum_strips()));
+				
+				comics.add(hmap);
+			}    		    		
+    		
+//    		Log.d(TAG, "Comic list is " + data);
+    		return null;
+    	}
+    	
+    	protected void onPostExecute(Long result) {
+    		adapter.notifyDataSetChanged();
+    		setProgressBarIndeterminateVisibility(false);
+    	}
+    }
+    
 }
