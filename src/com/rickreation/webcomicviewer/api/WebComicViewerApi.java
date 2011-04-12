@@ -132,7 +132,7 @@ public class WebComicViewerApi {
 				
 				strips.add(s);
 				
-				Log.d(TAG, s.getTitle() + " " + s.getNum());
+				Log.d(TAG, s.getImg());
 			}
 			
 			return strips; 

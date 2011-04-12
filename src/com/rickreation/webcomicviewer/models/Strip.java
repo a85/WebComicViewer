@@ -1,6 +1,9 @@
 package com.rickreation.webcomicviewer.models;
 
-public class Strip {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Strip implements Parcelable {
 	String comic;
 	
 	String img;
@@ -14,6 +17,23 @@ public class Strip {
 	int year;
 	
 	String transcript;
+	
+	public Strip() {
+		
+	}
+	
+	public Strip(Parcel in) {
+		comic = in.readString();
+		img = in.readString();
+		title = in.readString();
+		alt = in.readString();		
+		num = in.readInt();
+		date = in.readString();
+		month = in.readInt();
+		day = in.readInt();
+		year = in.readInt();		
+		transcript = in.readString();
+	}
 
 	public String getComic() {
 		return comic;
@@ -93,5 +113,33 @@ public class Strip {
 
 	public void setTranscript(String transcript) {
 		this.transcript = transcript;
+	}
+
+	public int describeContents() {
+		return 0;
+	}
+
+	public void writeToParcel(Parcel dest, int flags) {		
+		dest.writeString(comic);
+		dest.writeString(img);
+		dest.writeString(title);
+		dest.writeString(alt);
+		dest.writeInt(num);
+		dest.writeString(date);
+		dest.writeInt(month);
+		dest.writeInt(day);
+		dest.writeInt(year);
+		dest.writeString(transcript);
 	}		
+	
+	public static final Parcelable.Creator<Strip> CREATOR =
+        new Parcelable.Creator<Strip>() {
+        public Strip createFromParcel(Parcel in) {
+            return new Strip(in);
+        }
+
+        public Strip[] newArray(int size) {
+            return new Strip[size];
+        }
+    };
 }

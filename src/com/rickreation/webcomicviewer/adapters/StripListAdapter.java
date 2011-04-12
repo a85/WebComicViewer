@@ -49,6 +49,10 @@ public class StripListAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi = convertView;
 		
+		if(mStrips == null) {
+			return vi;
+		}
+		
 		StripListViewHolder holder;
 		
 		if(convertView==null) {			
@@ -60,11 +64,7 @@ public class StripListAdapter extends BaseAdapter {
 		}
 		else {
 			holder = (StripListViewHolder)vi.getTag();
-		}
-		
-		if(mStrips == null) {
-			return vi;
-		}
+		}		
 		
 		if(mStrips.size() == 0) {
 			return vi;
