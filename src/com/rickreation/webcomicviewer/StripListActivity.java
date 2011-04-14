@@ -59,11 +59,10 @@ public class StripListActivity extends ListActivity {
 		
 		mStripList.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Strip s = mStrips.get(position);
 				
-				Intent i = new Intent(getBaseContext(), ComicViewerActivity.class);
-				i.putExtra("strip", s);
-				
+				Intent i = new Intent(getBaseContext(), ComicViewerActivity.class);				
+				i.putExtra("strips", mStrips);
+				i.putExtra("current_strip", position);				
 				startActivity(i);
 			}
 		});

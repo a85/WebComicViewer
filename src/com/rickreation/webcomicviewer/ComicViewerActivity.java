@@ -1,13 +1,17 @@
 package com.rickreation.webcomicviewer;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.rickreation.ui.ZoomableImageView;
@@ -26,19 +30,41 @@ public class ComicViewerActivity extends Activity {
 	
 	private Handler mHandler;
 	
+	private ProgressBar mStripProgress;
+	private ArrayList<Strip> mStrips;
+	
+	private int mCurrentStrip;
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-    	setContentView(R.layout.comicviewer_activity);    	
+    	setContentView(R.layout.comicviewer_activity);
+    	    	
     	Intent i = getIntent();    	    
+    	    	
     	s = (Strip)i.getParcelableExtra("strip");    	
     	
-    	fileUrl = s.getImg();
-    	mHandler = new Handler();    	
-    	Log.d(TAG, s.getImg());
+    	if(s == null) {
+    		mStrips = (ArrayList)i.getParcelableArrayListExtra("strips");
+    		mCurrentStrip = (int)i.getIntExtra("current_strip", 0);    		    		    	
+    		
+    		s = mStrips.get(mCurrentStrip);
+    		fileUrl = s.getImg();
+    	}
+    	else {
+    		fileUrl = s.getImg();
+    	}
     	
-        mZoomImageView = (ZoomableImageView) findViewById(R.id.comic_viewer);                
+    	
+    	mHandler = new Handler();    	    	
+    	
+        mZoomImageView = (ZoomableImageView) findViewById(R.id.comic_viewer);
+        mStripProgress = (ProgressBar) findViewById(R.id.strip_progress);
+        
+        mStripProgress.setVisibility(View.VISIBLE);
+        mZoomImageView.setDefaultScale(ZoomableImageView.DEFAULT_SCALE_ORIGINAL);
+        
         new LoadPhotoBitmapThread().start();
     }
     
@@ -75,6 +101,7 @@ public class ComicViewerActivity extends Activity {
 
 	// Draw the image inside the environment view
 	private void drawImage(Bitmap b) {
+		mStripProgress.setVisibility(View.INVISIBLE);
 		Animation animation = new AlphaAnimation(0.0f, 1.0f);
 		Log.d(TAG, "Drawing image");
 		animation.setDuration(500);
@@ -83,9 +110,11 @@ public class ComicViewerActivity extends Activity {
 		
 		if (b == null) {
 			Toast.makeText(getBaseContext(), "Could not get the image.", Toast.LENGTH_SHORT).show();
-		} else {			
-			mZoomImageView.setBitmap(b);			
+		} else {						
+			mZoomImageView.setBitmap(b);
+			mZoomImageView.startAnimation(animation);
 		}
-
+		
+		
 	}
 }

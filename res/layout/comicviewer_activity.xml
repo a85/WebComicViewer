@@ -7,6 +7,11 @@
 	<FrameLayout android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:layout_weight="1">
+		<ProgressBar android:indeterminate="true"
+				android:layout_width="50dp" android:layout_height="50dp"
+				android:id="@+id/strip_progress" style="?android:attr/progressBarStyle"
+				android:layout_gravity="center_vertical|center_horizontal"
+				android:visibility="visible" />
 		<com.rickreation.ui.ZoomableImageView android:id="@+id/comic_viewer"
 				android:layout_width="fill_parent" android:layout_height="fill_parent"/>
 	</FrameLayout>
