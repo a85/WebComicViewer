@@ -62,7 +62,10 @@ public class StripListActivity extends ListActivity {
 				
 				Intent i = new Intent(getBaseContext(), ComicViewerActivity.class);				
 				i.putExtra("strips", mStrips);
-				i.putExtra("current_strip", position);				
+				i.putExtra("current_strip", position);
+				i.putExtra("comic_id", mComicId);
+				i.putExtra("from", mFrom);
+				i.putExtra("count", mCount);
 				startActivity(i);
 			}
 		});
@@ -71,33 +74,7 @@ public class StripListActivity extends ListActivity {
 	@Override
 	public void onStop() {
 		super.onStop();
-	}
-	
-	public class FetchStripsTask extends AsyncTask<String, Integer, Long> {
-    	@Override
-    	protected Long doInBackground(String... params) {
-    		//Need httpClient and apiUrl
-    		//Get data
-    		//Display data
-    		WebComicViewerApp app = (WebComicViewerApp) getApplication();
-    		HttpClient httpClient = app.getHttpClient();
-    		String apiUrl = getResources().getString(R.string.api_url);    		
-    		WebComicViewerApi api = new WebComicViewerApi(httpClient, apiUrl);
-    		mStrips = api.getStrips(mComicId, mFrom, mCount);
-    		return null;
-    	}
-    	
-    	protected void onPostExecute(Long result) {    	
-    		try {
-    			mAdapter.changeStrips(mStrips);
-        		mAdapter.notifyDataSetChanged();
-    		}
-    		catch(Exception e) {
-    			e.printStackTrace();
-    		}
-    		
-    	}
-    }
+	}	
 	
 	class StripListEndlessAdapter extends EndlessAdapter {
 		ArrayList<Strip> strips;

@@ -17,7 +17,16 @@ public class Strip implements Parcelable {
 	int year;
 	
 	String transcript;
+	String url;
 	
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	public Strip() {
 		
 	}
@@ -33,6 +42,7 @@ public class Strip implements Parcelable {
 		day = in.readInt();
 		year = in.readInt();		
 		transcript = in.readString();
+		url = in.readString();
 	}
 
 	public String getComic() {
@@ -130,6 +140,7 @@ public class Strip implements Parcelable {
 		dest.writeInt(day);
 		dest.writeInt(year);
 		dest.writeString(transcript);
+		dest.writeString(url);
 	}		
 	
 	public static final Parcelable.Creator<Strip> CREATOR =

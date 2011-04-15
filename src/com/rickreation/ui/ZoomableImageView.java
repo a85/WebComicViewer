@@ -375,6 +375,8 @@ public class ZoomableImageView extends View {
 			int initX = 0;
 			int initY = 0;
 			
+			matrix.reset();
+			
 			if(defaultScale == ZoomableImageView.DEFAULT_SCALE_FIT_INSIDE) {				
 				if(imgWidth > containerWidth) {			
 					scale = (float)containerWidth / imgWidth;			
@@ -400,12 +402,25 @@ public class ZoomableImageView extends View {
 				minScale = scale;
 			}
 			else {
-				if(imgWidth > containerWidth) {									
-					initY = (containerHeight - (int)imgHeight)/2;					
+				if(imgWidth > containerWidth) {
+					initX = 0;
+					if(imgHeight > containerHeight) {						
+						initY = 0;
+					}
+					else {						
+						initY = (containerHeight - (int)imgHeight)/2;
+					}
+										
 					matrix.postTranslate(0, initY);
 				}
 				else {								
-					initX = (containerWidth - (int)imgWidth)/2;					
+					initX = (containerWidth - (int)imgWidth)/2;
+					if(imgHeight > containerHeight) {
+						initY = 0;
+					}
+					else {
+						initY = (containerHeight - (int)imgHeight)/2;
+					}
 					matrix.postTranslate(initX, 0);
 				}
 				
@@ -466,8 +481,7 @@ public class ZoomableImageView extends View {
 				mHandler.postDelayed(this, 25);				
 			}
 			
-			invalidate();
-			
+			invalidate();			
 		}
 	};
 	

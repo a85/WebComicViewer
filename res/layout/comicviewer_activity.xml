@@ -15,4 +15,41 @@
 		<com.rickreation.ui.ZoomableImageView android:id="@+id/comic_viewer"
 				android:layout_width="fill_parent" android:layout_height="fill_parent"/>
 	</FrameLayout>
+	<LinearLayout android:id="@+id/toolbar_viewer"
+		android:layout_width="fill_parent"
+		android:layout_height="60dp"
+		android:orientation="horizontal">
+		
+		<Button android:id="@+id/toolbar_button_share"
+				android:text="Share"
+				android:layout_width="75dp"
+				android:layout_height="wrap_content"
+				android:padding="3dp"
+				android:layout_marginLeft="2dp"
+				android:layout_marginTop="5dp"/>
+		<Button android:id="@+id/toolbar_button_web"
+				android:text="Web"
+				android:layout_width="75dp"
+				android:layout_height="wrap_content"
+				android:padding="3dp"
+				android:layout_marginLeft="2dp"
+				android:layout_marginTop="5dp"
+				android:onClick="gotoWebsite"/>
+		<Button android:id="@+id/toolbar_button_previous"
+				android:text="Previous"
+				android:layout_width="75dp"
+				android:layout_height="wrap_content"
+				android:padding="3dp"
+				android:layout_marginLeft="2dp"
+				android:layout_marginTop="5dp"
+				android:onClick="previousStrip"/>
+		<Button android:id="@+id/toolbar_button_next"
+				android:text="Next"
+				android:layout_width="75dp"
+				android:layout_height="wrap_content"
+				android:padding="3dp"
+				android:layout_marginLeft="2dp"
+				android:layout_marginTop="5dp"
+				android:onClick="nextStrip"/>			
+	</LinearLayout>
 </LinearLayout>
