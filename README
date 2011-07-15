@@ -1,0 +1,3 @@
+Simple web comic viewer
+
+Created this to experiment with Android mainly. Contains a ZoomableImageView which I will release as a separate JAR file.

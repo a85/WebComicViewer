@@ -8,8 +8,6 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.cache.CacheConfig;
-import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
@@ -42,12 +40,7 @@ public class WebComicViewerApp extends Application {
 		shutdownHttpClient();
 		super.onTerminate();		
 	}
-	
-	@Override
-    public Object getSystemService(String name) {
-        return null;
-    }
-	
+
 	private HttpClient createHttpClient()
 	{
 		
@@ -57,18 +50,14 @@ public class WebComicViewerApp extends Application {
 			HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
 			HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
 			HttpProtocolParams.setUseExpectContinue(params, true);
-			
+
 			SchemeRegistry schReg = new SchemeRegistry();
 			schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
 			schReg.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
 			ClientConnectionManager conMgr = new ThreadSafeClientConnManager(params, schReg);
-			
-			CacheConfig cacheConfig = new CacheConfig();
-			cacheConfig.setMaxCacheEntries(1000);			
-			cacheConfig.setMaxObjectSizeBytes(8192);
-			
-			HttpClient cachingClient = new CachingHttpClient(new DefaultHttpClient(conMgr, params), cacheConfig);						
-			return cachingClient;		
+
+			HttpClient httpClient = new DefaultHttpClient();
+			return httpClient;
 		}
 		catch(Exception e) {
 			Log.d(TAG, "Could not create httpClient");
